@@ -3,7 +3,7 @@ package dev.avishek.paymentservice.services;
 import com.razorpay.PaymentLink;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
-import dev.avishek.paymentservice.dtos.ResponseOrderDto;
+import dev.avishek.paymentservice.dtos.OrderDto;
 import org.json.JSONObject;
 
 import org.springframework.context.annotation.Primary;
@@ -30,8 +30,8 @@ public class RazarpayPaymentGateway implements PaymentService {
         JSONObject paymentLinkRequest = new JSONObject();
 
         // Get these details from the order service
-        ResponseOrderDto responseOrderDto = orderService.getOrderDetails(orderId);
-        Long orderAmount = (Long)Math.round(responseOrderDto.getOrderAmount());
+        OrderDto orderDto = orderService.getOrderDetails(orderId);
+        Long orderAmount = (Long)Math.round(orderDto.getProductDetails().getPrice());
         paymentLinkRequest.put("amount", orderAmount * 100);
         paymentLinkRequest.put("currency","INR");
         paymentLinkRequest.put("expire_by", EXPIRATION_TIME);

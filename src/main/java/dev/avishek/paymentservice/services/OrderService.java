@@ -1,7 +1,7 @@
 package dev.avishek.paymentservice.services;
 
-import dev.avishek.paymentservice.dtos.ResponseOrderDto;
+import dev.avishek.paymentservice.dtos.OrderDto;
 
 public interface OrderService {
-    public ResponseOrderDto getOrderDetails(Long orderId);
+    public OrderDto getOrderDetails(Long orderId);
 }
