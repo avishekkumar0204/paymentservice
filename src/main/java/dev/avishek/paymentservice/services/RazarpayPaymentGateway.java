@@ -4,6 +4,8 @@ import com.razorpay.PaymentLink;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import dev.avishek.paymentservice.dtos.OrderDto;
+import dev.avishek.paymentservice.dtos.ProductDto;
+import dev.avishek.paymentservice.dtos.UserDto;
 import org.json.JSONObject;
 
 import org.springframework.context.annotation.Primary;
@@ -31,20 +33,20 @@ public class RazarpayPaymentGateway implements PaymentService {
 
         // Get these details from the order service
         OrderDto orderDto = orderService.getOrderDetails(orderId);
-        Long orderAmount = (Long)Math.round(orderDto.getProductDetails().getPrice());
+        ProductDto productDetails = orderDto.getProductDetails();
+        Long orderAmount = (Long)Math.round(productDetails.getPrice());
         paymentLinkRequest.put("amount", orderAmount * 100);
         paymentLinkRequest.put("currency","INR");
         paymentLinkRequest.put("expire_by", EXPIRATION_TIME);
 
-        // Get these details from the Product Service
-        paymentLinkRequest.put("reference_id",orderId.toString());
-        paymentLinkRequest.put("description","Payment for policy no #23456");
+        paymentLinkRequest.put("reference_id", orderId.toString());
+        paymentLinkRequest.put("description","Payment for " + productDetails.getTitle());
 
-        // Get these details from the User Service
         JSONObject customer = new JSONObject();
-        customer.put("name", "Avishek Kumar");
-        customer.put("contact","7491813411");
-        customer.put("email","kumaravishek84@gmail.com");
+        UserDto userDetail = orderDto.getUserDetails();
+        customer.put("name", userDetail.getName());
+        customer.put("contact",userDetail.getPhone());
+        customer.put("email",userDetail.getEmail());
         paymentLinkRequest.put("customer",customer);
 
         JSONObject notify = new JSONObject();
